@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="US-101" author="Santhosh">
+        <sqlFile path="db/changelog/US-101/ddl/ddl.sql"/>
+        <rollback>
+            <sqlFile path="db/changelog/US-101/rollback/rollback.sql"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="tag-db-1.0.0" author="Santhosh">
+        <tagDatabase tag="tag-db-1.0.0"/>
+    </changeSet>
+
+    <changeSet id="US-102" author="Santhosh">
+        <sqlFile path="db/changelog/US-102/ddl/ddl.sql"/>
+        <rollback>
+            <sqlFile path="db/changelog/US-102/rollback/rollback.sql"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="tag-db-2.0.0" author="Santhosh">
+        <tagDatabase tag="tag-db-2.0.0"/>
+    </changeSet>
+
+    <changeSet id="US-103" author="Santhosh">
+        <sqlFile path="db/changelog/US-103/ddl/ddl.sql"/>
+        <rollback>
+            <sqlFile path="db/changelog/US-103/rollback/rollback.sql"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="tag-db-2.1.0" author="Santhosh">
+        <tagDatabase tag="tag-db-2.1.0"/>
+    </changeSet>
+
+</databaseChangeLog>
