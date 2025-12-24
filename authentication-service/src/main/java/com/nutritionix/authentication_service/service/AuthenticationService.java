@@ -7,8 +7,10 @@ import com.nutritionix.authentication_service.exception.UserAlreadyExistExceptio
 import com.nutritionix.authentication_service.mapper.AuthUserMapper;
 import com.nutritionix.authentication_service.model.AuthUser;
 import com.nutritionix.authentication_service.repository.AuthenticationRepository;
+import com.nutritionix.authentication_service.utils.Constants;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 
@@ -18,17 +20,22 @@ public class AuthenticationService {
     private final AuthUserMapper authUserMapper;
     private final AuthenticationRepository authenticationRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
-    public AuthenticationService(KafkaTemplate<String, String> kafkaTemplate, AuthUserMapper authUserMapper, AuthenticationRepository authenticationRepository) {
+    public AuthenticationService(KafkaTemplate<String, String> kafkaTemplate,
+                                 AuthUserMapper authUserMapper,
+                                 AuthenticationRepository authenticationRepository,
+                                 ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
         this.authUserMapper = authUserMapper;
         this.authenticationRepository = authenticationRepository;
+        this.objectMapper = objectMapper;
     }
 
 
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
         try {
-            if (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
+           if  (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
                 throw new UserAlreadyExistException("User Already Exists with Email : " + registerRequest.getEmail());
             }
 
@@ -37,9 +44,14 @@ public class AuthenticationService {
             }
 
             AuthUser authUser = saveAuthUser(registerRequest);
+            String userEvent = objectMapper.writeValueAsString(registerRequest);
+            kafkaTemplate.send(Constants.USER_REGISTERED_TOPIC, userEvent);
 
-            return RegisterResponse.builder().email(authUser.getEmail()).userName(authUser.getUserName()).message("User Registered").createdTimeStamp(LocalDateTime.now()).build();
-
+            return RegisterResponse.builder()
+                    .email(authUser.getEmail())
+                    .userName(authUser.getUserName())
+                    .message("User Registered")
+                    .createdTimeStamp(LocalDateTime.now()).build();
         } catch (UserAlreadyExistException ex) {
             throw ex;
         } catch (Exception ex) {
