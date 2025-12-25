@@ -76,7 +76,10 @@ public class AuthenticationService {
                     .accessToken(token)
                     .expiresIn(jwtService.getExpiration(token))
                     .build();
-        } catch (Exception ex) {
+        } catch(InvalidCredentialsException ex){
+            throw ex;
+        }
+        catch (Exception ex) {
             throw new DataProcessingException("Error occurred : " + ex.getMessage());
         }
     }
