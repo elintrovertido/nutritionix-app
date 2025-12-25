@@ -68,7 +68,7 @@ public class AuthenticationService {
             AuthUser user = authenticationRepository.findByUserNameOrEmail(loginRequest.getUserName(), loginRequest.getEmail())
                     .orElseThrow(() -> new InvalidCredentialsException("User doesn't exist"));
             if (!user.getPassword().equals(loginRequest.getPassword())) {
-               throw new InvalidCredentialsException("Invalid Credentials, Password doesn't match");
+                throw new InvalidCredentialsException("Invalid Credentials, Password doesn't match");
             }
             String token = jwtService.generateToken(user);
             return LoginResponse.builder()
@@ -77,7 +77,7 @@ public class AuthenticationService {
                     .expiresIn(jwtService.getExpiration(token))
                     .build();
         } catch (Exception ex) {
-            throw ex;
+            throw new DataProcessingException("Error occurred : " + ex.getMessage());
         }
     }
 
