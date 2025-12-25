@@ -34,6 +34,9 @@ public class User {
     @NotEmpty(message = "last name is required")
     private String lastName;
 
+    @Column(name = "user_name", unique = true, nullable = false)
+    private String userName;
+
     @Column(name = "dob", nullable = false)
     @NotNull(message = "Date of Birth is required")
     private LocalDate dob;
@@ -42,10 +45,6 @@ public class User {
     @NotEmpty
     @Email
     private String email;
-
-    @Column(name = "password", nullable = false)
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
 
     @Column(name = "role", nullable = false)
     @NotEmpty

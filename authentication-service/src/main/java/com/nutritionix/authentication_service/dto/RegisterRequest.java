@@ -1,9 +1,6 @@
 package com.nutritionix.authentication_service.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-
     @NotEmpty(message = "first name is required")
     private String firstName;
 
@@ -32,10 +28,11 @@ public class RegisterRequest {
     private String email;
 
     @NotEmpty(message = "password is required")
-    @Min(8)
+    @Size(min = 8)
     private String password;
 
     @NotEmpty(message = "role is required")
     private String roles;
+
 
 }

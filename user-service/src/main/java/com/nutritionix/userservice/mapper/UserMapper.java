@@ -2,6 +2,7 @@ package com.nutritionix.userservice.mapper;
 
 import com.nutritionix.userservice.dto.UserRequest;
 import com.nutritionix.userservice.dto.UserResponse;
+import com.nutritionix.userservice.events.UserRegisterEvent;
 import com.nutritionix.userservice.model.User;
 
 public class UserMapper {
@@ -14,7 +15,7 @@ public class UserMapper {
                 .firstName(userRequest.getFirstName())
                 .lastName(userRequest.getLastName())
                 .email(userRequest.getEmail())
-                .password(userRequest.getPassword())
+                .userName(userRequest.getUserName())
                 .dob(userRequest.getDob())
                 .role(userRequest.getRole())
                 .build();
@@ -31,6 +32,17 @@ public class UserMapper {
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
+    }
+
+    public static UserRequest userRegisterEventToUserRequest(UserRegisterEvent userRegisterEvent){
+        return UserRequest.builder()
+                .firstName(userRegisterEvent.getFirstName())
+                .lastName(userRegisterEvent.getLastName())
+                .dob(userRegisterEvent.getDob())
+                .email(userRegisterEvent.getEmail())
+                .role(userRegisterEvent.getRoles())
+                .userName(userRegisterEvent.getUserName())
+                .build();
     }
 
 }

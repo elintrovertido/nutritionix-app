@@ -4,10 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -15,6 +12,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserRequest {
 
     @NotEmpty(message = "first name is required")
@@ -34,7 +32,6 @@ public class UserRequest {
     @NotEmpty(message = "role is required")
     private String role;
 
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
-
+    @NotEmpty(message = "userName is required")
+    private String userName;
 }

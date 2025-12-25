@@ -1,18 +1,14 @@
 package com.nutritionix.authentication_service.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class LoginRequest {
-
-    @Email
-    @NotBlank
     private String email;
-
-    @Size(min=8)
-    @NotBlank
+    private String userName;
+    @NotBlank(message = "password is required")
     private String password;
 }
