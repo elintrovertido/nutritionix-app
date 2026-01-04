@@ -4,7 +4,6 @@ import com.nutritionix.userservice.dto.UserRequest;
 import com.nutritionix.userservice.dto.UserResponse;
 import com.nutritionix.userservice.events.UserRegisterEvent;
 import com.nutritionix.userservice.mapper.UserMapper;
-import com.nutritionix.userservice.model.User;
 import com.nutritionix.userservice.service.UserService;
 import com.nutritionix.userservice.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +19,13 @@ public class UserEventConsumer {
 
     private final UserService userService;
 
-    public UserEventConsumer(ObjectMapper objectMapper, UserService userService){
+    public UserEventConsumer(ObjectMapper objectMapper, UserService userService) {
         this.objectMapper = objectMapper;
         this.userService = userService;
     }
 
     @KafkaListener(topics = Constants.USER_REGISTERED_TOPIC, groupId = "user-service-group")
-    public void consumeUserRegisteredEvent(String message){
+    public void consumeUserRegisteredEvent(String message) {
         log.info(message);
         UserRegisterEvent userRegisterEvent = objectMapper.readValue(message, UserRegisterEvent.class);
         UserRequest userRequest = UserMapper.userRegisterEventToUserRequest(userRegisterEvent);

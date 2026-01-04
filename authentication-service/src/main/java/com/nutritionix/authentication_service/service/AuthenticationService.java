@@ -1,9 +1,6 @@
 package com.nutritionix.authentication_service.service;
 
-import com.nutritionix.authentication_service.dto.LoginRequest;
-import com.nutritionix.authentication_service.dto.LoginResponse;
-import com.nutritionix.authentication_service.dto.RegisterRequest;
-import com.nutritionix.authentication_service.dto.RegisterResponse;
+import com.nutritionix.authentication_service.dto.*;
 import com.nutritionix.authentication_service.exception.DataProcessingException;
 import com.nutritionix.authentication_service.exception.InvalidCredentialsException;
 import com.nutritionix.authentication_service.exception.UserAlreadyExistException;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -84,5 +82,18 @@ public class AuthenticationService {
         }
     }
 
-
+    public List<AuthUserDTO> getUsers(){
+        List<AuthUser> authUsers = authenticationRepository.findAll();
+        return authUsers.stream()
+                .map(user -> {
+                    return AuthUserDTO.builder()
+                            .id(user.getId())
+                            .userName(user.getUserName())
+                            .email(user.getEmail())
+                            .createdAt(user.getCreatedAt())
+                            .enabled(user.isEnabled())
+                            .roles(user.getRoles())
+                            .build();
+                }).toList();
+    }
 }
