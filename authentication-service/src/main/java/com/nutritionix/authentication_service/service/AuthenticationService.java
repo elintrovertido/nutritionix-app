@@ -1,5 +1,6 @@
 package com.nutritionix.authentication_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutritionix.authentication_service.dto.*;
 import com.nutritionix.authentication_service.exception.DataProcessingException;
 import com.nutritionix.authentication_service.exception.InvalidCredentialsException;
@@ -12,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
+
 
 import java.time.LocalDateTime;
 import java.util.List;

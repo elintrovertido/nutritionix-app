@@ -1,5 +1,7 @@
 package com.nutritionix.userservice.kafka.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutritionix.userservice.dto.UserRequest;
 import com.nutritionix.userservice.dto.UserResponse;
 import com.nutritionix.userservice.events.UserRegisterEvent;
@@ -9,7 +11,7 @@ import com.nutritionix.userservice.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
+
 
 @Component
 @Slf4j
@@ -25,7 +27,7 @@ public class UserEventConsumer {
     }
 
     @KafkaListener(topics = Constants.USER_REGISTERED_TOPIC, groupId = "user-service-group")
-    public void consumeUserRegisteredEvent(String message) {
+    public void consumeUserRegisteredEvent(String message) throws JsonProcessingException {
         log.info(message);
         UserRegisterEvent userRegisterEvent = objectMapper.readValue(message, UserRegisterEvent.class);
         UserRequest userRequest = UserMapper.userRegisterEventToUserRequest(userRegisterEvent);
