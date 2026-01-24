@@ -20,19 +20,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<RegisterResponse> registerUser(@RequestBody RegisterRequest registerRequest) {
         RegisterResponse registerResponse = authenticationService.registerUser(registerRequest);
         return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse loginResponse = authenticationService.loginUser(loginRequest);
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<AuthUserDTO>> getUsersData(){
+    public ResponseEntity<List<AuthUserDTO>> getUsersData() {
         List<AuthUserDTO> authUserDTOList = authenticationService.getUsers();
         return new ResponseEntity<>(authUserDTOList, HttpStatus.OK);
     }

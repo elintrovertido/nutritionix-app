@@ -117,18 +117,18 @@ public class UserService {
     }
 
     public UserResponse deleteUser(long id) {
-        try{
+        try {
             User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found"));
             userRepository.delete(user);
             return UserMapper.userToUserResponse(user);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Unexpected error occurred while deleting user {}", ex.getMessage());
             throw new DataProcessingException("Unexpected error occurred while deleting user : " + id);
         }
 
     }
 
-    public List<UserResponse> getUsersByRole(String role){
+    public List<UserResponse> getUsersByRole(String role) {
         List<User> users = userRepository.findAllByRole(role);
         return users.stream().map(UserMapper::userToUserResponse).toList();
     }

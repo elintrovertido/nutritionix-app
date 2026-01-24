@@ -1,0 +1,49 @@
+server:
+  port: 8050
+
+
+spring:
+  application:
+    name: apigateway-service
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: apigateway-service
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        prefer-ip-address: true
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - RewritePath=/users(?<segment>/?.*), /api/users${segment}
+
+        - id: authentication-service
+          uri: lb://authentication-service
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth(?<segment>/?.*), /api/auth${segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+    org.springframework.cloud.consul: DEBUG

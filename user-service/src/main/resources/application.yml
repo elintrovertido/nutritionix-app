@@ -15,5 +15,9 @@ management:
       exposure:
         include: health,info
 
+logging:
+  level:
+    root: INFO
+
 
 #  .\consul agent -dev --client=0.0.0.0
