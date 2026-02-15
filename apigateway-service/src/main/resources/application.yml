@@ -1,21 +1,8 @@
-server:
-  port: 8050
-
-
 spring:
   application:
     name: apigateway-service
 
   cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        service-name: apigateway-service
-        health-check-path: /actuator/health
-        health-check-interval: 10s
-        prefer-ip-address: true
-
     gateway:
       discovery:
         locator:
@@ -40,10 +27,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.client: DEBUG
-    org.springframework.cloud.consul: DEBUG
+        include: health,info
