@@ -1,0 +1,29 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nutritionix
+    username: postgres
+    password: 502291
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: authentication-service
+        health-check-path: /api/actuator/health
+        health-check-interval: 10s
+        prefer-ip-address: true
+
+jwt:
+  private-key: nutritionix

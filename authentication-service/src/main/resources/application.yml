@@ -1,15 +1,17 @@
+spring:
+  application:
+    name: authentication-service
+
 server:
   servlet:
-    contextPath: /api
+    context-path: /api
 
-spring:
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        service-name: authentication-service
-        health-check-path: /api/actuator/health
-        health-check-interval: 10s
-        prefer-ip-address: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
 
+logging:
+  level:
+    root: INFO

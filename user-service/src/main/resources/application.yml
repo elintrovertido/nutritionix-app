@@ -1,13 +1,17 @@
 spring:
+  application:
+    name: user-service
+
   cloud:
     consul:
-      host: localhost
-      port: 8500
       discovery:
         service-name: user-service
         health-check-path: /actuator/health
         health-check-interval: 10s
         prefer-ip-address: true
+
+server:
+  port: 8081
 
 management:
   endpoints:
@@ -18,6 +22,3 @@ management:
 logging:
   level:
     root: INFO
-
-
-#  .\consul agent -dev --client=0.0.0.0

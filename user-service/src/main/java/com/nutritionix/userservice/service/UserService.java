@@ -7,6 +7,7 @@ import com.nutritionix.userservice.exception.UserAlreadyExistException;
 import com.nutritionix.userservice.exception.UserNotFoundException;
 import com.nutritionix.userservice.mapper.UserMapper;
 import com.nutritionix.userservice.model.User;
+
 import com.nutritionix.userservice.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
