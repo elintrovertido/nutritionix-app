@@ -5,6 +5,7 @@ import com.nutritionix.authentication_service.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/users")
     public ResponseEntity<List<AuthUserDTO>> getUsersData() {
         List<AuthUserDTO> authUserDTOList = authenticationService.getUsers();

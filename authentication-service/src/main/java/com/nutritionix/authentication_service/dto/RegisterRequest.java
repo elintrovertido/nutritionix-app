@@ -1,10 +1,10 @@
 package com.nutritionix.authentication_service.dto;
 
+import com.nutritionix.authentication_service.utils.Roles;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Data
@@ -32,7 +32,5 @@ public class RegisterRequest {
     private String password;
 
     @NotEmpty(message = "role is required")
-    private String roles;
-
-
+    private Roles roles;
 }

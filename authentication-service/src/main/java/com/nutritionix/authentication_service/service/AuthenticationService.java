@@ -12,8 +12,12 @@ import com.nutritionix.authentication_service.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,16 +32,22 @@ public class AuthenticationService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     public RegisterResponse registerUser(RegisterRequest registerRequest) {
+        log.info("Entered into Register User : {}", registerRequest.getUserName());
         try {
             if (authenticationRepository.existsByEmail(registerRequest.getEmail())) {
+                log.error("User Already Exists with Email : {}", registerRequest.getEmail());
                 throw new UserAlreadyExistException("User Already Exists with Email : " + registerRequest.getEmail());
             }
 
             if (authenticationRepository.existsByUserName(registerRequest.getUserName())) {
+                log.error("User Already Exists with UserName  : {}", registerRequest.getUserName());
                 throw new UserAlreadyExistException("User Already Exists with UserName : " + registerRequest.getUserName());
             }
+
 
             AuthUser authUser = saveAuthUser(registerRequest);
             String userEvent = objectMapper.writeValueAsString(registerRequest);
@@ -45,12 +55,13 @@ public class AuthenticationService {
 
             return RegisterResponse.builder()
                     .email(authUser.getEmail())
-                    .userName(authUser.getUserName())
+                    .userName(authUser.getUsername())
                     .message("User Registered")
                     .createdTimeStamp(LocalDateTime.now()).build();
         } catch (UserAlreadyExistException ex) {
             throw ex;
         } catch (Exception ex) {
+            log.error("Database error occurred while creating user : {}", registerRequest.getUserName());
             throw new DataProcessingException("Database error occurred while creating user" + ex.getMessage());
         }
     }
@@ -58,38 +69,39 @@ public class AuthenticationService {
     private AuthUser saveAuthUser(RegisterRequest registerRequest) {
         AuthUser authUser = authUserMapper.registerToAuthUserMapper(registerRequest);
         authUser.setEnabled(true);
+        authUser.setPassword(passwordEncoder.encode(authUser.getPassword()));
         authenticationRepository.save(authUser);
+        log.info("User Saved : {}", authUser.getUsername());
         return authUser;
     }
 
     public LoginResponse loginUser(LoginRequest loginRequest) {
         try {
-            AuthUser user = authenticationRepository.findByUserNameOrEmail(loginRequest.getUserName(), loginRequest.getEmail())
-                    .orElseThrow(() -> new InvalidCredentialsException("User doesn't exist"));
-            if (!user.getPassword().equals(loginRequest.getPassword())) {
-                throw new InvalidCredentialsException("Invalid Credentials, Password doesn't match");
-            }
-            String token = jwtService.generateToken(user);
+            Authentication authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword())
+            );
+            AuthUser authUser =(AuthUser) authenticate.getPrincipal();
+
+            String token = jwtService.generateToken(authUser);
             return LoginResponse.builder()
-                    .userName(user.getUserName())
+                    .userName(loginRequest.getUserName())
                     .accessToken(token)
                     .expiresIn(jwtService.getExpiration(token))
                     .build();
-        } catch(InvalidCredentialsException ex){
-            throw ex;
-        }
-        catch (Exception ex) {
+        } catch (AuthenticationException ex) {
+            throw new InvalidCredentialsException(ex.getMessage());
+        } catch (Exception ex) {
             throw new DataProcessingException("Error occurred : " + ex.getMessage());
         }
     }
 
-    public List<AuthUserDTO> getUsers(){
+    public List<AuthUserDTO> getUsers() {
         List<AuthUser> authUsers = authenticationRepository.findAll();
         return authUsers.stream()
                 .map(user -> {
                     return AuthUserDTO.builder()
                             .id(user.getId())
-                            .userName(user.getUserName())
+                            .userName(user.getUsername())
                             .email(user.getEmail())
                             .createdAt(user.getCreatedAt())
                             .enabled(user.isEnabled())
